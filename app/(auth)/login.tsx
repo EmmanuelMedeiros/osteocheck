@@ -11,7 +11,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import AuthAPI from "@/services/auth";
 import { useCallback, useContext, useState } from "react";
-import { storeData } from "@/utils/asyncStorage";
+import { getStoreData, storeData } from "@/utils/asyncStorage";
 import { AppContext } from "@/context/appContext";
 import { NotificationType } from "@/components/notification.component";
 import { UserContext } from "@/context/userContext";
@@ -52,7 +52,8 @@ export default function LoginScreen() {
         email: email!,
         password: password!,
       });
-      storeData("userJWT", auth.data.jwt);
+
+      await storeData("userJWT", auth.data.jwt);
       appContext.handleSetNotification(NotificationType.Success, "Login realizado com sucesso");
       await verifyProfile();
     } catch (error: any) {

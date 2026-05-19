@@ -139,8 +139,6 @@ export default function HomeScreen() {
         <View style={{ marginTop: 20 }}>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
               gap: 10,
               alignItems: "center",
             }}
