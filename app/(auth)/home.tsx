@@ -83,7 +83,7 @@ export default function HomeScreen() {
         />,
         <AppText
           content={
-            "e do conseso"
+            "e do consenso"
           }
         />,
         <AppText
