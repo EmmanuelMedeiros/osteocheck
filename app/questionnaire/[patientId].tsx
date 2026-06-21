@@ -156,6 +156,32 @@ export default function QuestionnaireScreen() {
         }
     };
 
+    const handlePrevious = async () => {
+        try {
+            setSubmitting(true);
+            const payload = {
+                questionnaireType: "jawAssessment",
+                patientId: Number(patientId),
+            };
+            const response = await QuestionnaireAPI.previousQuestion(payload);
+            if (response.data) {
+                setQuestion(response.data);
+                if (response.data.order === 0 && response.data.group?.order === 5 && response.data.options?.length > 0) {
+                    setSelectedOptionIds([response.data.options[0].id]);
+                } else if (response.data.order === 1 && response.data.group?.order === 3 && response.data.options?.length > 0) {
+                    setSelectedOptionIds([response.data.options[0].id]);
+                } else {
+                    setSelectedOptionIds([]);
+                }
+                setTextAnswer("");
+            }
+        } catch (error: any) {
+            appContext.handleSetNotification(NotificationType.Error, error.message || "Erro ao voltar.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     const handleGeneratePdf = async () => {
         if (!questionnaireId) {
             appContext.handleSetNotification(NotificationType.Warning, "ID da avaliação não encontrado.");
@@ -303,7 +329,7 @@ export default function QuestionnaireScreen() {
                 <View style={{ width: 24 }} />
             </View>
 
-            <ScrollView contentContainerStyle={styles.content}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.content}>
                 {question && (
                     <View style={styles.questionCard}>
                         <AppText
@@ -372,16 +398,30 @@ export default function QuestionnaireScreen() {
             </ScrollView>
 
             <View style={styles.footer}>
-                <ButtonComponent
-                    onPress={handleNext}
-                    disabled={submitting}
-                    style={{ backgroundColor: colors.successBlue, borderRadius: 8, opacity: submitting ? 0.7 : 1 }}
-                >
-                    <AppText
-                        content={submitting ? "Carregando..." : "Próxima Pergunta"}
-                        textProps={{ style: { color: colors.mainWhite, fontWeight: "bold", fontSize: 16 } }}
-                    />
-                </ButtonComponent>
+                <View style={{ flex: 1, marginRight: 8 }}>
+                    <ButtonComponent
+                        onPress={handlePrevious}
+                        disabled={submitting}
+                        style={{ backgroundColor: colors.mainWhite, borderWidth: 1, borderColor: colors.darkerGray, borderRadius: 8, opacity: submitting ? 0.7 : 1, width: '100%', height: 50, justifyContent: 'center' }}
+                    >
+                        <AppText
+                            content="Voltar"
+                            textProps={{ style: { color: colors.mainBlack, fontWeight: "bold", fontSize: 16, textAlign: 'center' } }}
+                        />
+                    </ButtonComponent>
+                </View>
+                <View style={{ flex: 1, marginLeft: 8 }}>
+                    <ButtonComponent
+                        onPress={handleNext}
+                        disabled={submitting}
+                        style={{ backgroundColor: colors.successBlue, borderRadius: 8, opacity: submitting ? 0.7 : 1, width: '100%', height: 50, justifyContent: 'center' }}
+                    >
+                        <AppText
+                            content={submitting ? "Carregando..." : "Próxima"}
+                            textProps={{ style: { color: colors.mainWhite, fontWeight: "bold", fontSize: 16, textAlign: 'center' } }}
+                        />
+                    </ButtonComponent>
+                </View>
             </View>
         </View>
     );
@@ -499,11 +539,13 @@ const styles = StyleSheet.create({
         textAlignVertical: "top",
     },
     footer: {
+        flexDirection: "row",
         padding: 20,
         paddingBottom: 40,
         backgroundColor: colors.mainWhite,
         borderTopWidth: 1,
         borderTopColor: colors.darkerGray,
+        alignItems: "center",
     },
     finishedContainer: {
         flex: 1,

@@ -14,7 +14,7 @@ export class Api {
   constructor() {
     this.http = axios.create({
       timeout: 30000,
-      baseURL: 'http://192.168.0.6:3001/api',
+      baseURL: 'http://192.168.0.5:3001/api',
       responseType: 'json',
       headers: {
         'Content-Type': 'application/json',

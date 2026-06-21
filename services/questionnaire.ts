@@ -25,6 +25,10 @@ class QuestionnaireAPI extends Api {
         return await this.post('/questionnaire/next-question', nextQuestionDTO);
     }
 
+    async previousQuestion(questionnaireProgressDTO: QuestionnaireProgressDTO): Promise<ServiceResponse<Question | null>> {
+        return await this.post('/questionnaire/previous-question', questionnaireProgressDTO);
+    }
+
     async getQuestionnaireProgress(questionnaireProgressDTO: QuestionnaireProgressDTO): Promise<ServiceResponse<QuestionnaireProgressResponse>> {
         const queryParams = new URLSearchParams({
             questionnaireType: questionnaireProgressDTO.questionnaireType,
